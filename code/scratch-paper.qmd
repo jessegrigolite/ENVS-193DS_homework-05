@@ -2,10 +2,10 @@
 title: "Untitled"
 format: 
   html: 
-  toc: true
-  toc-location: left
-  code-fold: true
-  theme: yeti
+    toc: true
+    toc-location: left
+    code-fold: true
+    theme: yeti
 execute: 
   message: false
   warning: false
