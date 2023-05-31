@@ -25,10 +25,11 @@ library(broom)
 library(corrplot)
 library(AICcmodavg)
 library(GGally)
+library(MuMIn)
 ```
 
 Read in data:
-
+Select subset of columns you would like to use
 ```{r, reading-data}
 plant <- read_csv(here("data", "knb-lter-hfr.109.18", "hf109-01-sarracenia.csv")) %>% 
   #to make colunm names cleaner
@@ -44,7 +45,7 @@ gg_miss_var(plant)
 
 ```
 
-Subsetting the data by dropping NAs:
+Subsetting the data by dropping NAs for the columns they show up in:
 
 ```{r, subset-drop-NA}
 plant_subset <- plant %>% 
@@ -84,7 +85,7 @@ plant_subset %>%
 Starting regression here:
 
 (example) To determine how species and physiological characteristics predict biomass, we fit multiple linear models. 
-
+null is when no predictors are in the model, full is when all predictors are in the model
 ```{r, null-and-full-model}
 null <- lm(totmass ~ 1, data = plant_subset)
 full <- lm(totmass ~ species + feedlevel + sla + chlorophyll + amass + num_lvs + num_phylls, data = plant_subset)
@@ -100,7 +101,7 @@ plot(full)
 
 We also tested for normality and homoskedasticity using the Shapiro-Wilk Test (null hypothesis is that the residuals are null hypothesis):
 
-We tested for heterscedasticity using the Breusch-Pagan test (null hypothesis: the variable of interest has constant variance). (this is the performance package)
+We tested for heterscedasticity using the Breusch-Pagan test (null hypothesis: the variable of interest has constant variance). (this is the performance package) remember to articulate what the test is, not the function.
 
 ```{r}
 check_normality(full)
@@ -108,9 +109,10 @@ check_normality(full)
 check_heteroscedasticity(full)
 ```
 
-The assumptions are not met for multiple linear regression. We can mathematically transform the response variable to increase residual normaility.
+The assumptions are not met for multiple linear regression. We can mathematically transform the response variable to increase residual normaility. This changes all hypothesis to log, need to back transform later.
 
-```{r}
+```{r, logs}
+null_log <- lm(log(totmass) ~ 1, data = plant_subset)
 full_log <- lm(log(totmass) ~  species + feedlevel + sla + chlorophyll + amass + num_lvs + num_phylls, data = plant_subset)
 
 full_log
@@ -119,3 +121,74 @@ check_normality(full_log)
 check_heteroscedasticity(full_log)
 ```
 
+Evaluate multicollinearity:
+```{r, calculate-vif}
+#show GVIF generalized which is for categorical predictors, transformation to compare GVIF to VIF in the last column
+#means if there are predictors that are explaining more varince in your response variable because the predictor variables are interacting
+car:: vif(full_log)
+```
+ We evaluated multicollinearity by calculating generalized variance inflation factor and determined that...
+ 
+ try some more models:
+ 
+addressing the questions: what set of predictor variables best explains the response? this is a secondary question- not only do some predictor variables predict the response, but which combination. maximize explanation and minimizes complexity
+
+```{r, model-1}
+#this model only has one predictor that is species to predict total biomass
+model2_log <- lm(log(totmass) ~ species, data = plant_subset)
+```
+
+check assumptions for model 2:
+```{r}
+plot(model2_log)
+
+check_normality(model2_log)
+check_heteroscedasticity(model2_log)
+```
+both conform to assumptions of linear regression! Each time you come up with another model, you must check all assumptions.
+
+compare models using Akaike's Information criterion (AIC) values:
+```{r}
+#looks for simplest model that explains the most variance, finding compromise between complexity and prediction
+#AICc is better for small sample sizes, in MuMIn package
+#look for model with lowest AIC value
+AICc(full_log, model2_log, null_log)
+#out of these three the full log has the lowest AIC
+```
+we compared models using AIC and chose the model with the lowest value which was...
+
+
+# Results
+
+We found that the ____ model using ___ _____ ____ predictors best predicted ______(model summary) Use p value, r squared, f stat, alpha, etc (use summary function)
+```{r}
+#reference will be compared to the first categorical variable in data set
+#all are log transformed, but you can back transform by exponentiating
+summary(full_log)
+#look at p value of predictors to see how much significance they have
+
+table <- tidy(full_log, conf.int = TRUE) %>% 
+  #change the p-value numbers if they're really small, using mutate
+  #chnage the estimates, standard error, and t-statistics to round to... digits
+  #make it into a flex table
+  flextable() %>% 
+  #fit it to the viewer
+  autofit()
+table
+```
+
+
+use ggpredict() to back transform estimates
+```{r, back-transform}
+#report results on the scale of the original variable, be transparent on the back transform you did
+model_pred <- ggpredict(full_log, terms = "species", back.transform = TRUE)
+model_pred
+#all else held constant, you would expect these increases displayed in the model, with other variables held at their overall mean
+plot(model_pred, add.data = TRUE)
+
+plot( ggpredict(full_log, terms = "chlorophyll", back.transform = TRUE), add.data = TRUE)
+
+
+```
+
+# different types of anova

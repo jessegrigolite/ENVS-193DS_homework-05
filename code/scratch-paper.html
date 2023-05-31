@@ -96,6 +96,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <script src="scratch-paper_files/libs/bootstrap/bootstrap.min.js"></script>
 <link href="scratch-paper_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="scratch-paper_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="scratch-paper_files/libs/tabwid-1.1.3/tabwid.css" rel="stylesheet">
+<script src="scratch-paper_files/libs/tabwid-1.1.3/tabwid.js"></script>
 
 
 </head>
@@ -104,7 +106,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <div id="quarto-content" class="page-columns page-rows-contents page-layout-article toc-left">
 <div id="quarto-sidebar-toc-left" class="sidebar toc-left">
-  
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#results" id="toc-results" class="nav-link active" data-scroll-target="#results">Results</a></li>
+  <li><a href="#different-types-of-anova" id="toc-different-types-of-anova" class="nav-link" data-scroll-target="#different-types-of-anova">different types of anova</a></li>
+  </ul>
+</nav>
 </div>
 <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
 </div>
@@ -142,10 +151,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co"># would be nice to have</span></span>
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(corrplot)</span>
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(AICcmodavg)</span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(GGally)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(GGally)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MuMIn)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<p>Read in data:</p>
+<p>Read in data: Select subset of columns you would like to use</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
@@ -166,7 +176,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><img src="scratch-paper_files/figure-html/missing-data-visualization-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p>Subsetting the data by dropping NAs:</p>
+<p>Subsetting the data by dropping NAs for the columns they show up in:</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
@@ -213,7 +223,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 <p>Starting regression here:</p>
-<p>(example) To determine how species and physiological characteristics predict biomass, we fit multiple linear models.</p>
+<p>(example) To determine how species and physiological characteristics predict biomass, we fit multiple linear models. null is when no predictors are in the model, full is when all predictors are in the model</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
@@ -237,7 +247,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </details>
 </div>
 <p>We also tested for normality and homoskedasticity using the Shapiro-Wilk Test (null hypothesis is that the residuals are null hypothesis):</p>
-<p>We tested for heterscedasticity using the Breusch-Pagan test (null hypothesis: the variable of interest has constant variance). (this is the performance package)</p>
+<p>We tested for heterscedasticity using the Breusch-Pagan test (null hypothesis: the variable of interest has constant variance). (this is the performance package) remember to articulate what the test is, not the function.</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
@@ -255,13 +265,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <pre><code>Warning: Heteroscedasticity (non-constant error variance) detected (p &lt; .001).</code></pre>
 </div>
 </div>
-<p>The assumptions are not met for multiple linear regression. We can mathematically transform the response variable to increase residual normaility.</p>
+<p>The assumptions are not met for multiple linear regression. We can mathematically transform the response variable to increase residual normaility. This changes all hypothesis to log, need to back transform later.</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>full_log <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">log</span>(totmass) <span class="sc">~</span>  species <span class="sc">+</span> feedlevel <span class="sc">+</span> sla <span class="sc">+</span> chlorophyll <span class="sc">+</span> amass <span class="sc">+</span> num_lvs <span class="sc">+</span> num_phylls, <span class="at">data =</span> plant_subset)</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>full_log</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>null_log <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">log</span>(totmass) <span class="sc">~</span> <span class="dv">1</span>, <span class="at">data =</span> plant_subset)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>full_log <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">log</span>(totmass) <span class="sc">~</span>  species <span class="sc">+</span> feedlevel <span class="sc">+</span> sla <span class="sc">+</span> chlorophyll <span class="sc">+</span> amass <span class="sc">+</span> num_lvs <span class="sc">+</span> num_phylls, <span class="at">data =</span> plant_subset)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>full_log</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>
@@ -284,16 +295,16 @@ speciesleucophylla        speciesminor   speciespsittacina     speciespurpurea
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(full_log)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="scratch-paper_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
+<p><img src="scratch-paper_files/figure-html/logs-1.png" class="img-fluid" width="672"></p>
 </div>
 <div class="cell-output-display">
-<p><img src="scratch-paper_files/figure-html/unnamed-chunk-3-2.png" class="img-fluid" width="672"></p>
+<p><img src="scratch-paper_files/figure-html/logs-2.png" class="img-fluid" width="672"></p>
 </div>
 <div class="cell-output-display">
-<p><img src="scratch-paper_files/figure-html/unnamed-chunk-3-3.png" class="img-fluid" width="672"></p>
+<p><img src="scratch-paper_files/figure-html/logs-3.png" class="img-fluid" width="672"></p>
 </div>
 <div class="cell-output-display">
-<p><img src="scratch-paper_files/figure-html/unnamed-chunk-3-4.png" class="img-fluid" width="672"></p>
+<p><img src="scratch-paper_files/figure-html/logs-4.png" class="img-fluid" width="672"></p>
 </div>
 <details>
 <summary>Code</summary>
@@ -310,6 +321,203 @@ speciesleucophylla        speciesminor   speciespsittacina     speciespurpurea
 <pre><code>OK: Error variance appears to be homoscedastic (p = 0.071).</code></pre>
 </div>
 </div>
+<p>Evaluate multicollinearity:</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co">#show GVIF generalized which is for categorical predictors, transformation to compare GVIF to VIF in the last column</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="co">#means if there are predictors that are explaining more varince in your response variable because the predictor variables are interacting</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>car<span class="sc">::</span> <span class="fu">vif</span>(full_log)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>                 GVIF Df GVIF^(1/(2*Df))
+species     42.351675  9        1.231351
+feedlevel    1.621993  1        1.273575
+sla          1.999989  1        1.414210
+chlorophyll  1.949828  1        1.396362
+amass        2.872084  1        1.694722
+num_lvs      2.813855  1        1.677455
+num_phylls   2.995510  1        1.730754</code></pre>
+</div>
+</div>
+<p>We evaluated multicollinearity by calculating generalized variance inflation factor and determined that…</p>
+<p>try some more models:</p>
+<p>addressing the questions: what set of predictor variables best explains the response? this is a secondary question- not only do some predictor variables predict the response, but which combination. maximize explanation and minimizes complexity</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co">#this model only has one predictor that is species to predict total biomass</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>model2_log <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">log</span>(totmass) <span class="sc">~</span> species, <span class="at">data =</span> plant_subset)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>check assumptions for model 2:</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(model2_log)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="scratch-paper_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="scratch-paper_files/figure-html/unnamed-chunk-3-2.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="scratch-paper_files/figure-html/unnamed-chunk-3-3.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="scratch-paper_files/figure-html/unnamed-chunk-3-4.png" class="img-fluid" width="672"></p>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">check_normality</span>(model2_log)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>OK: residuals appear as normally distributed (p = 0.374).</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">check_heteroscedasticity</span>(model2_log)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>OK: Error variance appears to be homoscedastic (p = 0.100).</code></pre>
+</div>
+</div>
+<p>both conform to assumptions of linear regression! Each time you come up with another model, you must check all assumptions.</p>
+<p>compare models using Akaike’s Information criterion (AIC) values:</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co">#looks for simplest model that explains the most variance, finding compromise between complexity and prediction</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="co">#AICc is better for small sample sizes, in MuMIn package</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="co">#look for model with lowest AIC value</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="fu">AICc</span>(full_log, model2_log, null_log)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>           df     AICc
+full_log   17 133.9424
+model2_log 11 157.5751
+null_log    2 306.0028</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co">#out of these three the full log has the lowest AIC</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>we compared models using AIC and chose the model with the lowest value which was…</p>
+<section id="results" class="level1">
+<h1>Results</h1>
+<p>We found that the ____ model using ___ _____ ____ predictors best predicted ______(model summary) Use p value, r squared, f stat, alpha, etc (use summary function)</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co">#reference will be compared to the first categorical variable in data set</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="co">#all are log transformed, but you can back transform by exponentiating</span></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(full_log)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = log(totmass) ~ species + feedlevel + sla + chlorophyll + 
+    amass + num_lvs + num_phylls, data = plant_subset)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-0.88872 -0.20811  0.02825  0.24218  0.78287 
+
+Coefficients:
+                    Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)        -1.339043   0.597727  -2.240 0.027624 *  
+speciesalata        1.113163   0.184021   6.049 3.56e-08 ***
+speciesflava        1.404562   0.262955   5.341 7.29e-07 ***
+speciesjonesii      0.319652   0.196426   1.627 0.107281    
+speciesleucophylla  1.709035   0.227608   7.509 4.88e-11 ***
+speciesminor        0.389310   0.187903   2.072 0.041239 *  
+speciespsittacina  -1.645198   0.207035  -7.946 6.36e-12 ***
+speciespurpurea    -0.364348   0.254380  -1.432 0.155643    
+speciesrosea       -0.947383   0.260495  -3.637 0.000467 ***
+speciesrubra        0.875342   0.196361   4.458 2.46e-05 ***
+feedlevel          -0.474255   0.234493  -2.022 0.046199 *  
+sla                -0.002493   0.001160  -2.149 0.034430 *  
+chlorophyll         0.004368   0.001189   3.672 0.000414 ***
+amass               0.002338   0.002988   0.782 0.436166    
+num_lvs             0.091764   0.022413   4.094 9.46e-05 ***
+num_phylls         -0.039585   0.051714  -0.765 0.446068    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 0.413 on 87 degrees of freedom
+Multiple R-squared:  0.8687,    Adjusted R-squared:  0.8461 
+F-statistic: 38.38 on 15 and 87 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co">#look at p value of predictors to see how much significance they have</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>table <span class="ot">&lt;-</span> <span class="fu">tidy</span>(full_log, <span class="at">conf.int =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">#change the p-value numbers if they're really small, using mutate</span></span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>  <span class="co">#chnage the estimates, standard error, and t-statistics to round to... digits</span></span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">#make it into a flex table</span></span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">flextable</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>  <span class="co">#fit it to the viewer</span></span>
+<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autofit</span>()</span>
+<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a>table</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+
+<div class="tabwid"><style>.cl-8740229c{}.cl-8732a22a{font-family:'Arial';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-87379c30{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-87379c3a{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-8737bd3c{width:1.568in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8737bd46{width:1.228in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8737bd47{width:1.177in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8737bd50{width:1.058in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8737bd51{width:1.942in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8737bd5a{width:1.313in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8737bd5b{width:1.568in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8737bd5c{width:1.228in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8737bd64{width:1.177in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8737bd65{width:1.058in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8737bd6e{width:1.942in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8737bd78{width:1.313in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8737bd79{width:1.568in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8737bd7a{width:1.228in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8737bd82{width:1.177in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8737bd83{width:1.058in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8737bd8c{width:1.942in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8737bd8d{width:1.313in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8737bd96{width:1.568in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8737bd97{width:1.228in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8737bd98{width:1.177in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8737bda0{width:1.058in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8737bdaa{width:1.942in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8737bdab{width:1.313in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8737bdac{width:1.568in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8737bdb4{width:1.228in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8737bdb5{width:1.177in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8737bdbe{width:1.058in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8737bdbf{width:1.942in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8737bdc8{width:1.313in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8737bdc9{width:1.568in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8737bdd2{width:1.228in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8737bdd3{width:1.177in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8737bddc{width:1.058in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8737bddd{width:1.942in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8737bdde{width:1.313in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8737bde6{width:1.568in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8737bdf0{width:1.228in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8737bdf1{width:1.177in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8737bdfa{width:1.058in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8737bdfb{width:1.942in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8737bdfc{width:1.313in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8737bdfd{width:1.568in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8737be04{width:1.228in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8737be0e{width:1.177in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8737be0f{width:1.058in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8737be18{width:1.942in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8737be19{width:1.313in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-8740229c"><thead><tr style="overflow-wrap:break-word;"><th class="cl-8737bd3c"><p class="cl-87379c30"><span class="cl-8732a22a">term</span></p></th><th class="cl-8737bd46"><p class="cl-87379c3a"><span class="cl-8732a22a">estimate</span></p></th><th class="cl-8737bd47"><p class="cl-87379c3a"><span class="cl-8732a22a">std.error</span></p></th><th class="cl-8737bd50"><p class="cl-87379c3a"><span class="cl-8732a22a">statistic</span></p></th><th class="cl-8737bd51"><p class="cl-87379c3a"><span class="cl-8732a22a">p.value</span></p></th><th class="cl-8737bd46"><p class="cl-87379c3a"><span class="cl-8732a22a">conf.low</span></p></th><th class="cl-8737bd5a"><p class="cl-87379c3a"><span class="cl-8732a22a">conf.high</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-8737bd5b"><p class="cl-87379c30"><span class="cl-8732a22a">(Intercept)</span></p></td><td class="cl-8737bd5c"><p class="cl-87379c3a"><span class="cl-8732a22a">-1.339043200</span></p></td><td class="cl-8737bd64"><p class="cl-87379c3a"><span class="cl-8732a22a">0.597726532</span></p></td><td class="cl-8737bd65"><p class="cl-87379c3a"><span class="cl-8732a22a">-2.2402271</span></p></td><td class="cl-8737bd6e"><p class="cl-87379c3a"><span class="cl-8732a22a">0.027624109607483009</span></p></td><td class="cl-8737bd5c"><p class="cl-87379c3a"><span class="cl-8732a22a">-2.527089405</span></p></td><td class="cl-8737bd78"><p class="cl-87379c3a"><span class="cl-8732a22a">-0.1509969955</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-8737bd79"><p class="cl-87379c30"><span class="cl-8732a22a">speciesalata</span></p></td><td class="cl-8737bd7a"><p class="cl-87379c3a"><span class="cl-8732a22a">1.113162580</span></p></td><td class="cl-8737bd82"><p class="cl-87379c3a"><span class="cl-8732a22a">0.184020930</span></p></td><td class="cl-8737bd83"><p class="cl-87379c3a"><span class="cl-8732a22a">6.0491086</span></p></td><td class="cl-8737bd8c"><p class="cl-87379c3a"><span class="cl-8732a22a">0.000000035633453091</span></p></td><td class="cl-8737bd7a"><p class="cl-87379c3a"><span class="cl-8732a22a">0.747401056</span></p></td><td class="cl-8737bd8d"><p class="cl-87379c3a"><span class="cl-8732a22a">1.4789241035</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-8737bd96"><p class="cl-87379c30"><span class="cl-8732a22a">speciesflava</span></p></td><td class="cl-8737bd97"><p class="cl-87379c3a"><span class="cl-8732a22a">1.404562038</span></p></td><td class="cl-8737bd98"><p class="cl-87379c3a"><span class="cl-8732a22a">0.262954818</span></p></td><td class="cl-8737bda0"><p class="cl-87379c3a"><span class="cl-8732a22a">5.3414577</span></p></td><td class="cl-8737bdaa"><p class="cl-87379c3a"><span class="cl-8732a22a">0.000000728606298866</span></p></td><td class="cl-8737bd97"><p class="cl-87379c3a"><span class="cl-8732a22a">0.881910865</span></p></td><td class="cl-8737bdab"><p class="cl-87379c3a"><span class="cl-8732a22a">1.9272132117</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-8737bdac"><p class="cl-87379c30"><span class="cl-8732a22a">speciesjonesii</span></p></td><td class="cl-8737bdb4"><p class="cl-87379c3a"><span class="cl-8732a22a">0.319652351</span></p></td><td class="cl-8737bdb5"><p class="cl-87379c3a"><span class="cl-8732a22a">0.196426010</span></p></td><td class="cl-8737bdbe"><p class="cl-87379c3a"><span class="cl-8732a22a">1.6273423</span></p></td><td class="cl-8737bdbf"><p class="cl-87379c3a"><span class="cl-8732a22a">0.107280978897063520</span></p></td><td class="cl-8737bdb4"><p class="cl-87379c3a"><span class="cl-8732a22a">-0.070765614</span></p></td><td class="cl-8737bdc8"><p class="cl-87379c3a"><span class="cl-8732a22a">0.7100703152</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-8737bdac"><p class="cl-87379c30"><span class="cl-8732a22a">speciesleucophylla</span></p></td><td class="cl-8737bdb4"><p class="cl-87379c3a"><span class="cl-8732a22a">1.709035391</span></p></td><td class="cl-8737bdb5"><p class="cl-87379c3a"><span class="cl-8732a22a">0.227608275</span></p></td><td class="cl-8737bdbe"><p class="cl-87379c3a"><span class="cl-8732a22a">7.5086698</span></p></td><td class="cl-8737bdbf"><p class="cl-87379c3a"><span class="cl-8732a22a">0.000000000048774953</span></p></td><td class="cl-8737bdb4"><p class="cl-87379c3a"><span class="cl-8732a22a">1.256639298</span></p></td><td class="cl-8737bdc8"><p class="cl-87379c3a"><span class="cl-8732a22a">2.1614314841</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-8737bd79"><p class="cl-87379c30"><span class="cl-8732a22a">speciesminor</span></p></td><td class="cl-8737bd7a"><p class="cl-87379c3a"><span class="cl-8732a22a">0.389310367</span></p></td><td class="cl-8737bd82"><p class="cl-87379c3a"><span class="cl-8732a22a">0.187903472</span></p></td><td class="cl-8737bd83"><p class="cl-87379c3a"><span class="cl-8732a22a">2.0718636</span></p></td><td class="cl-8737bd8c"><p class="cl-87379c3a"><span class="cl-8732a22a">0.041239074384119417</span></p></td><td class="cl-8737bd7a"><p class="cl-87379c3a"><span class="cl-8732a22a">0.015831871</span></p></td><td class="cl-8737bd8d"><p class="cl-87379c3a"><span class="cl-8732a22a">0.7627888636</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-8737bd79"><p class="cl-87379c30"><span class="cl-8732a22a">speciespsittacina</span></p></td><td class="cl-8737bd7a"><p class="cl-87379c3a"><span class="cl-8732a22a">-1.645197874</span></p></td><td class="cl-8737bd82"><p class="cl-87379c3a"><span class="cl-8732a22a">0.207034720</span></p></td><td class="cl-8737bd83"><p class="cl-87379c3a"><span class="cl-8732a22a">-7.9464830</span></p></td><td class="cl-8737bd8c"><p class="cl-87379c3a"><span class="cl-8732a22a">0.000000000006356134</span></p></td><td class="cl-8737bd7a"><p class="cl-87379c3a"><span class="cl-8732a22a">-2.056701798</span></p></td><td class="cl-8737bd8d"><p class="cl-87379c3a"><span class="cl-8732a22a">-1.2336939506</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-8737bd79"><p class="cl-87379c30"><span class="cl-8732a22a">speciespurpurea</span></p></td><td class="cl-8737bd7a"><p class="cl-87379c3a"><span class="cl-8732a22a">-0.364347584</span></p></td><td class="cl-8737bd82"><p class="cl-87379c3a"><span class="cl-8732a22a">0.254380246</span></p></td><td class="cl-8737bd83"><p class="cl-87379c3a"><span class="cl-8732a22a">-1.4322951</span></p></td><td class="cl-8737bd8c"><p class="cl-87379c3a"><span class="cl-8732a22a">0.155642631385408292</span></p></td><td class="cl-8737bd7a"><p class="cl-87379c3a"><span class="cl-8732a22a">-0.869955868</span></p></td><td class="cl-8737bd8d"><p class="cl-87379c3a"><span class="cl-8732a22a">0.1412607001</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-8737bd79"><p class="cl-87379c30"><span class="cl-8732a22a">speciesrosea</span></p></td><td class="cl-8737bd7a"><p class="cl-87379c3a"><span class="cl-8732a22a">-0.947383285</span></p></td><td class="cl-8737bd82"><p class="cl-87379c3a"><span class="cl-8732a22a">0.260494896</span></p></td><td class="cl-8737bd83"><p class="cl-87379c3a"><span class="cl-8732a22a">-3.6368593</span></p></td><td class="cl-8737bd8c"><p class="cl-87379c3a"><span class="cl-8732a22a">0.000466976667424192</span></p></td><td class="cl-8737bd7a"><p class="cl-87379c3a"><span class="cl-8732a22a">-1.465145097</span></p></td><td class="cl-8737bd8d"><p class="cl-87379c3a"><span class="cl-8732a22a">-0.4296214723</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-8737bd79"><p class="cl-87379c30"><span class="cl-8732a22a">speciesrubra</span></p></td><td class="cl-8737bd7a"><p class="cl-87379c3a"><span class="cl-8732a22a">0.875341885</span></p></td><td class="cl-8737bd82"><p class="cl-87379c3a"><span class="cl-8732a22a">0.196361315</span></p></td><td class="cl-8737bd83"><p class="cl-87379c3a"><span class="cl-8732a22a">4.4578123</span></p></td><td class="cl-8737bd8c"><p class="cl-87379c3a"><span class="cl-8732a22a">0.000024573993550445</span></p></td><td class="cl-8737bd7a"><p class="cl-87379c3a"><span class="cl-8732a22a">0.485052508</span></p></td><td class="cl-8737bd8d"><p class="cl-87379c3a"><span class="cl-8732a22a">1.2656312619</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-8737bdc9"><p class="cl-87379c30"><span class="cl-8732a22a">feedlevel</span></p></td><td class="cl-8737bdd2"><p class="cl-87379c3a"><span class="cl-8732a22a">-0.474255269</span></p></td><td class="cl-8737bdd3"><p class="cl-87379c3a"><span class="cl-8732a22a">0.234492879</span></p></td><td class="cl-8737bddc"><p class="cl-87379c3a"><span class="cl-8732a22a">-2.0224719</span></p></td><td class="cl-8737bddd"><p class="cl-87379c3a"><span class="cl-8732a22a">0.046198841611705246</span></p></td><td class="cl-8737bdd2"><p class="cl-87379c3a"><span class="cl-8732a22a">-0.940335257</span></p></td><td class="cl-8737bdde"><p class="cl-87379c3a"><span class="cl-8732a22a">-0.0081752817</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-8737bde6"><p class="cl-87379c30"><span class="cl-8732a22a">sla</span></p></td><td class="cl-8737bdf0"><p class="cl-87379c3a"><span class="cl-8732a22a">-0.002493083</span></p></td><td class="cl-8737bdf1"><p class="cl-87379c3a"><span class="cl-8732a22a">0.001160230</span></p></td><td class="cl-8737bdfa"><p class="cl-87379c3a"><span class="cl-8732a22a">-2.1487826</span></p></td><td class="cl-8737bdfb"><p class="cl-87379c3a"><span class="cl-8732a22a">0.034429589763780563</span></p></td><td class="cl-8737bdf0"><p class="cl-87379c3a"><span class="cl-8732a22a">-0.004799167</span></p></td><td class="cl-8737bdfc"><p class="cl-87379c3a"><span class="cl-8732a22a">-0.0001869994</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-8737bdac"><p class="cl-87379c30"><span class="cl-8732a22a">chlorophyll</span></p></td><td class="cl-8737bdb4"><p class="cl-87379c3a"><span class="cl-8732a22a">0.004368330</span></p></td><td class="cl-8737bdb5"><p class="cl-87379c3a"><span class="cl-8732a22a">0.001189484</span></p></td><td class="cl-8737bdbe"><p class="cl-87379c3a"><span class="cl-8732a22a">3.6724575</span></p></td><td class="cl-8737bdbf"><p class="cl-87379c3a"><span class="cl-8732a22a">0.000414110175835848</span></p></td><td class="cl-8737bdb4"><p class="cl-87379c3a"><span class="cl-8732a22a">0.002004101</span></p></td><td class="cl-8737bdc8"><p class="cl-87379c3a"><span class="cl-8732a22a">0.0067325586</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-8737bde6"><p class="cl-87379c30"><span class="cl-8732a22a">amass</span></p></td><td class="cl-8737bdf0"><p class="cl-87379c3a"><span class="cl-8732a22a">0.002337656</span></p></td><td class="cl-8737bdf1"><p class="cl-87379c3a"><span class="cl-8732a22a">0.002988210</span></p></td><td class="cl-8737bdfa"><p class="cl-87379c3a"><span class="cl-8732a22a">0.7822929</span></p></td><td class="cl-8737bdfb"><p class="cl-87379c3a"><span class="cl-8732a22a">0.436166480376765753</span></p></td><td class="cl-8737bdf0"><p class="cl-87379c3a"><span class="cl-8732a22a">-0.003601736</span></p></td><td class="cl-8737bdfc"><p class="cl-87379c3a"><span class="cl-8732a22a">0.0082770479</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-8737bd79"><p class="cl-87379c30"><span class="cl-8732a22a">num_lvs</span></p></td><td class="cl-8737bd7a"><p class="cl-87379c3a"><span class="cl-8732a22a">0.091763935</span></p></td><td class="cl-8737bd82"><p class="cl-87379c3a"><span class="cl-8732a22a">0.022413350</span></p></td><td class="cl-8737bd83"><p class="cl-87379c3a"><span class="cl-8732a22a">4.0941643</span></p></td><td class="cl-8737bd8c"><p class="cl-87379c3a"><span class="cl-8732a22a">0.000094562482452723</span></p></td><td class="cl-8737bd7a"><p class="cl-87379c3a"><span class="cl-8732a22a">0.047214976</span></p></td><td class="cl-8737bd8d"><p class="cl-87379c3a"><span class="cl-8732a22a">0.1363128941</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-8737bdfd"><p class="cl-87379c30"><span class="cl-8732a22a">num_phylls</span></p></td><td class="cl-8737be04"><p class="cl-87379c3a"><span class="cl-8732a22a">-0.039585071</span></p></td><td class="cl-8737be0e"><p class="cl-87379c3a"><span class="cl-8732a22a">0.051713890</span></p></td><td class="cl-8737be0f"><p class="cl-87379c3a"><span class="cl-8732a22a">-0.7654630</span></p></td><td class="cl-8737be18"><p class="cl-87379c3a"><span class="cl-8732a22a">0.446067519262093981</span></p></td><td class="cl-8737be04"><p class="cl-87379c3a"><span class="cl-8732a22a">-0.142372027</span></p></td><td class="cl-8737be19"><p class="cl-87379c3a"><span class="cl-8732a22a">0.0632018848</span></p></td></tr></tbody></table></div>
+</div>
+</div>
+<p>use ggpredict() to back transform estimates</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co">#report results on the scale of the original variable, be transparent on the back transform you did</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>model_pred <span class="ot">&lt;-</span> <span class="fu">ggpredict</span>(full_log, <span class="at">terms =</span> <span class="st">"species"</span>, <span class="at">back.transform =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>model_pred</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># Predicted values of totmass
+
+species     | Predicted |        95% CI
+---------------------------------------
+alabamensis |      2.78 | [2.11,  3.65]
+alata       |      8.45 | [6.58, 10.86]
+flava       |     11.31 | [7.57, 16.89]
+jonesii     |      3.82 | [2.78,  5.26]
+minor       |      4.10 | [3.15,  5.33]
+psittacina  |      0.54 | [0.37,  0.77]
+purpurea    |      1.93 | [1.28,  2.91]
+rubra       |      6.66 | [5.03,  8.82]
+
+Adjusted for:
+*   feedlevel =   0.18
+*         sla = 129.27
+* chlorophyll = 471.29
+*       amass =  35.26
+*     num_lvs =   7.08
+*  num_phylls =   0.58</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co">#all else held constant, you would expect these increases displayed in the model, with other variables held at their overall mean</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(model_pred, <span class="at">add.data =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="scratch-paper_files/figure-html/back-transform-1.png" class="img-fluid" width="672"></p>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>( <span class="fu">ggpredict</span>(full_log, <span class="at">terms =</span> <span class="st">"chlorophyll"</span>, <span class="at">back.transform =</span> <span class="cn">TRUE</span>), <span class="at">add.data =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="scratch-paper_files/figure-html/back-transform-2.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="different-types-of-anova" class="level1">
+<h1>different types of anova</h1>
+</section>
 
 </main>
 <!-- /main column -->
