@@ -2,14 +2,24 @@
 title: "Homework #5"
 author: "Jesse Grigolite"
 format: 
-html:
-  toc: true
-  toc-location: left
-  code-fold: true
-  theme: yeti
+  html:
+    toc: true
+    toc-location: left
+   code-fold: true
+    theme: yeti
 execute: 
   message: false
   warning: false
 ---
 
-## Introduction:
+# Introduction:
+
+*Sarrecenia*, commonly known as the pitcher plant, is a carnivorous plant typical of well-lit and nutrient poor ecosystems (Ellison and Gotelli, 2002).The plant is reliant on prey in order to receive their essential nutrients of Nitrogen and Phosphorous, while still photosynthesizing to harness energy (Wakefield et. al., 2005). For these reasons, *Sarrencia* are equipped with both pitchers, leaves specialized for capturing anthropods and digestion, and phyllodes, leaves specialized in photosynthesis (Ellison and Gotelli, 2002). These plants are important model systems for a variety of reasons. Firstly, they are perennial plants and can live for decades, allowing ecologists to understand how past environmental conditions affect present populations (Ellison and Gotelli, 2002). Secondly, pitcher plants are predominantly located in nutrient deficient areas, therefore addition of nutrients such as nitrogen can have an effect on their physiology and possibly be used an an indicator for nitrogen levels (Ellison and Gotelli, 2002). Finally, *Sarrencia* live in bogs, which are ecosystems with high biodiversity, making the plant an integral part of the health of this ecosystem. In this analysis we will be addressing the question of what *Sarrencia* characteristics predict total biomass. By understanding the specific morphological, physiological, and taxonomic characteristics that promote pitcher plant biomass, we can understand how to better manage and conserve this species, whether pitcher plants can be nutrient indicators, and what past environmental conditions may have been like for a specific pitcher plant population. We will be testing the hypothesis, 
+
+# Works Cited
+
+Ellison, Aaron M., and Nicholas J. Gotelli. “Nitrogen Availability Alters the Expression of Carnivory in the Northern Pitcher Plant, Sarracenia Purpurea&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Purpurea.” Proceedings of the National Academy of Sciences, vol. 99, no. 7, 19 Mar. 2002, pp. 4409–4412, https://doi.org/10.1073/pnas.022057199. 
+
+Gotelli, Nicholas J., and Aaron M. Ellison. “Nitrogen Deposition and Extinction Risk in the Northern Pitcher Plant, Sarracenia Purpurea.” Ecology, vol. 83, no. 10, 1 Oct. 2002, pp. 2758–2765, https://doi.org/10.1890/0012-9658(2002)083[2758:ndaeri]2.0.co;2. 
+
+Wakefield, Amy E., et al. “Prey Addition Alters Nutrient Stoichiometry of the Carnivorous Plant Sarracenia Purpurea.” Ecology, vol. 86, no. 7, 1 July 2005, pp. 1737–1743, https://doi.org/10.1890/04-1673. 
