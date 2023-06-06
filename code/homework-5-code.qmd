@@ -131,7 +131,72 @@ The residuals appeared much more randomly distributed about the red line, indica
 check_normality(full_log)
 check_heteroscedasticity(full_log)
 ```
-Both tests then indicated insignificant p-values, allowing us to retain the null and able to claim normality of residuals and homoscedasticity. 
+Both tests then indicated insignificant p-values, allowing us to retain the null and able to claim normality of residuals and homoscedasticity. We then evaluated multicollinearity in the full log model, which can lead to illogical coefficients and large changes in model output, by calculating the generalized variance inflation factor. 
+```{r, calculate-vif}
+#show GVIF generalized which is for categorical predictors, transformation to compare GVIF to VIF in the last column
+#means if there are predictors that are explaining more variance in your response variable because the predictor variables are interacting
+car:: vif(full_log)
+```
+We determined that multicollinearity is not a possibility in the full log model because all of the variance inflation factors were below 5. Next we explored a second model for total pitcher plant biomass that only has the predictor of species. 
+```{r, model-1}
+#this model only has one predictor that is species to predict total biomass
+model2_log <- lm(log(totmass) ~ species, data = plant_subset)
+```
+As inherit biology and genetics is determinant for total size of many other animals, species seemed to be an appropriate predictor that could explain total biomass simply. The second model was then checked visually for the assumptions of multiple linear regression.
+```{r}
+#visually checking assumptions
+plot(model2_log)
+```
+**Figure 6: Second Model Diagnostics** The visualization describes the distribution of residuals and normality of data in the second model which includes species as the predictor for pitcher plant total biomass. 
+
+Based on the visualization we believed the model to be normally distributed and homoscedastic. We then checked the second model statistically using the Breusch-Pagan Test and Shapiro-Wilk Test. 
+```{r}
+#checking for normality of second model
+check_normality(model2_log)
+#checking homoscedasticity of second model
+check_heteroscedasticity(model2_log)
+```
+As both tests reported insignificant p-values, the second model which only included species as a predictor was concluded to meet all the assumption of multiple linear regression. Next, a third model was formed to predict pitcher plant total biomass.
+```{r}
+#creating the third model
+model3_log <- lm(log(totmass) ~ species + feedlevel, data = plant_subset)
+```
+
+The third model included species and feed level as the predictors for biomass. Although genetics determines a large amount of individual physiology, nutrient availability in the form of feed, can also influence growth. Furthermore, pitcher plants are native to nutrient deficient ecosystems making them reliant on carnivore for essential nutrients, therefore an increase in nutrient availability may allow them the opportunity to increase their biomass. The third model was then checked visually for meeting the assumnptions of multiple linear regression.
+```{r}
+#running visual diagnostics on the third model
+plot(model3_log)
+```
+**Figure 7: Third Model Diagnostics** The visualization describes the distribution of residuals and normality of data in the third model which includes species and feed level to predict total biomass of pitcher plants.
+
+As the visualization displayed randomly distributed residuals about the red line and normally distributed data based on the Q-Q plot, we assumed the third model to meet the necessary assunmptions for multiple linear regression. However, to ensure these assumptions we tested them statistically using the Breusch-Pagan Test and Shapiro-Wilk Test. 
+```{r}
+#checking for normality in third model
+check_normality(model3_log)
+#checking for homoscedasticity in third model
+check_heteroscedasticity(model3_log)
+```
+Both tests resulted in insignificant p-values, so the null was retained which indicated that the third model was homoscedastic and had normally distributed residuals. Finally, a fourth model was constructed that included species, total number of leaves (phyllodes and pitchers), and chlorophyll content.
+```{r}
+#creating model 4
+model4_log <- lm(log(totmass) ~ chlorophyll + num_lvs + species, data = plant_subset)
+```
+Since pitcher plants harness energy from both carnivory and photosynthesis, it was important to include a model that accounted for the latter. Developing biomass, i.e. growing, requires extensive energy, therefore a plant's photosynthetic capabilities, measured in chlorophyll and leaves, could influence and therefore predict its biomass. The model was then checked visually for meeting the requirements of multiple linear regression.
+```{r}
+#running visual diagnostics on model 4
+plot(model4_log)
+```
+**Figure 8: Fourth Model Diagnostics** The visualization describes the distribution of residuals and normality of data in the fourth model which includes species, chlorophyll, and total number of leaves to predict total biomass of pitcher plants.
+
+Based on the above plots, we interpreted the fourth model to be homoscedastic and normally distributed. To check the assumptions statistically, we then used the Shapiro-Wilk Test to test for normality, and the Breusch-Pagan Test to test for homoscedasticity.
+```{r}
+#checking fourth model for normality
+check_normality(model4_log)
+#checking fourth model for homoscedasticity
+check_heteroscedasticity(model4_log)
+```
+In both tests the null was retained, indicating that model four is both normally distributed and homoscedastic, therefore meeting the requirement of multiple linear regression.
+
 
 
 

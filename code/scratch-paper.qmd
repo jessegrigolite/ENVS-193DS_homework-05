@@ -147,6 +147,26 @@ check_heteroscedasticity(model2_log)
 ```
 both conform to assumptions of linear regression! Each time you come up with another model, you must check all assumptions.
 
+```{r}
+model3_log <- lm(log(totmass) ~ species + feedlevel, data = plant_subset)
+```
+```{r}
+plot(model3_log)
+check_normality(model3_log)
+check_heteroscedasticity(model3_log)
+```
+
+```{r}
+model4_log <- lm(log(totmass) ~ chlorophyll + num_lvs + species, data = plant_subset)
+```
+
+```{r}
+plot(model4_log)
+check_normality(model4_log)
+check_heteroscedasticity(model4_log)
+```
+
+
 compare models using Akaike's Information criterion (AIC) values:
 ```{r}
 #looks for simplest model that explains the most variance, finding compromise between complexity and prediction
