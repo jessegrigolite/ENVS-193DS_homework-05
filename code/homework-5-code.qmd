@@ -88,6 +88,54 @@ plant_subset %>%
   ggpairs()
 
 ```
+**Figure 3: Relationships Between Predictor Variables** Each plot in the grid compares two predictor variables. There is a visualization and correlation value (if numerical) for each predictor pair.
+
+The matrix of plots visually represented the relationship between each predictor variable. The scatter plots showed the two variables plotted against another, the box plots are used for a visualization of the categorical variable of species, and the correlations are given for each numerical pair of predictor variables. Since we cleaned up the data, visually reviewed it, and explored relationships amongst predictor variables, we then began with creating our null and full models to use as baselines for our analysis. 
+```{r, null-and-full-model}
+#creating models for both null and full
+null <- lm(totmass ~ 1, data = plant_subset)
+full <- lm(totmass ~ species + feedlevel + sla + chlorophyll + amass + num_lvs + num_phylls, data = plant_subset)
+```
+The null model is a fit linear model to predict total biomass of pitcher plants with no predictors. The full model is the fit linear model to predict total biomass when all predictor variables are factored in. We then checked the statistical assumptions associated with multiple linear regression the full These ass model. These assumptions include independent data, linearity, homoscedasticity, and normality. We first visually assessed normality and homoscedasticity using diagnostic plots for the full model:
+```{r, full-diagnostic}
+#running diagnostic plots on the full model
+par(mfrow = c(2,2))
+plot(full)
+#based on how clumped the residuals are int he beginning it is border line for homoscedasticity, moreso heterscedastic
+```
+**Figure 4: Full Model Diagnostics** The two plots on the left visualize residuals, the top right checks for normality, and the bottom right checks for out liars.
+
+Based on the diagnostic plots for the full model above, we found that the residuals were not randomly distributed and appeared heteroscedastic. We checked the full model statistically for normality using the Shapiro-Wilk Test where the null hypothesis is that the model is normally distributed. We also check the full model for homoscedasticity using the Breusch-Pagan test, where the null hypothesis is that the model is homoscedastic.
+```{r}
+check_normality(full)
+#not normal and heteroscedasticity
+check_heteroscedasticity(full)
+```
+Both the Breusch-Pagan Test and Shapiro-Wilk Test had significant p-values, indicating that the null needed to be rejected in both instances. The full model does not meet the assumptions of a multiple linear regression because it is not normally distributed or homoscedastic. In order to meet these assumptions, we mathematically transformed the null and full models by using a log to increase residual normality.
+```{r}
+#transforming the full and null models
+null_log <- lm(log(totmass) ~ 1, data = plant_subset)
+full_log <- lm(log(totmass) ~  species + feedlevel + sla + chlorophyll + amass + num_lvs + num_phylls, data = plant_subset)
+```
+We then checked that the new full logarithmic model met the assumptions visually and statistically.
+```{r}
+#plotting diagnostics for the log full model
+par(mfrow = c(2,2))
+plot(full_log)
+```
+**Figure :5 Full Logarithmic Model Diagnostics** The two plots on the left visualize residuals, the top right checks for normality, and the bottom right checks for out liars.
+
+The residuals appeared much more randomly distributed about the red line, indicating homoscedasticity. We then checked for normailty and homoscedasticity statistically by using the Breusch-Pagan Test and Shapiro-Wilk Test.
+```{r}
+#statistically testing the full log model
+check_normality(full_log)
+check_heteroscedasticity(full_log)
+```
+Both tests then indicated insignificant p-values, allowing us to retain the null and able to claim normality of residuals and homoscedasticity. 
+
+
+
+
 
 
 
