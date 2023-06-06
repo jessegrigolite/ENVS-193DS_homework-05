@@ -195,7 +195,12 @@ check_normality(model4_log)
 #checking fourth model for homoscedasticity
 check_heteroscedasticity(model4_log)
 ```
-In both tests the null was retained, indicating that model four is both normally distributed and homoscedastic, therefore meeting the requirement of multiple linear regression.
+In both tests the null was retained, indicating that model four is both normally distributed and homoscedastic, therefore meeting the requirement of multiple linear regression. All the models were then compared using Akaike's Information Criterion (AIC) values. AIC factor in both the predictability and complexity of each model, reporting the lowest AIC value to the model which predicts the most about total biomass in the simplest way.
+```{r}
+#determing AIC of all models
+AICc(full_log, model2_log, model3_log, model4_log, null_log)
+```
+The model with the lowest AIC value was model four which included species, chlorophyll, and number of leaves as its predictors for total biomass, indicating that this model is the best compromise between predictability and complexity.
 
 
 
