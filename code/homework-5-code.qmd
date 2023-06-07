@@ -1,5 +1,5 @@
 ---
-title: "Homework #5"
+title: "Pitcher Plant Biomass Analysis"
 author: "Jesse Grigolite"
 date: 6/6/23
 format: 
@@ -16,6 +16,7 @@ execute:
 # Introduction:
 
 *Sarrecenia*, commonly known as the pitcher plant, is a carnivorous plant typical of well-lit and nutrient poor ecosystems (Ellison and Gotelli, 2002).The plant is reliant on prey in order to receive their essential nutrients of Nitrogen and Phosphorous, while still photosynthesizing to harness energy (Wakefield et. al., 2005). For these reasons, *Sarrencia* are equipped with both pitchers, leaves specialized for capturing anthropods and digestion, and phyllodes, leaves specialized in photosynthesis (Ellison and Gotelli, 2002). These plants are important model systems for a variety of reasons. Firstly, they are perennial plants and can live for decades, allowing ecologists to understand how past environmental conditions affect present populations (Ellison and Gotelli, 2002). Secondly, pitcher plants are predominantly located in nutrient deficient areas, therefore addition of nutrients such as nitrogen can have an effect on their physiology and possibly be used an an indicator for nitrogen levels (Ellison and Gotelli, 2002). Finally, *Sarrencia* live in bogs, which are ecosystems with high biodiversity, making the plant an integral part of the health of this ecosystem. In this analysis we will be addressing the question of what *Sarrencia* characteristics best predict total biomass. By understanding the specific morphological, physiological, and taxonomic characteristics that promote pitcher plant biomass, we can understand how to better manage and conserve this species, whether pitcher plants can be nutrient indicators, and what past environmental conditions may have been like for a specific pitcher plant population. We will be testing the null hypothesis that physiological characteristics do not affect pitcher plant biomass, with the alternative hypothesis that at least one physiological characteristic predicts pitcher plant biomass.
+
 
 # Methods
 
@@ -201,6 +202,56 @@ In both tests the null was retained, indicating that model four is both normally
 AICc(full_log, model2_log, model3_log, model4_log, null_log)
 ```
 The model with the lowest AIC value was model four which included species, chlorophyll, and number of leaves as its predictors for total biomass, indicating that this model is the best compromise between predictability and complexity.
+
+
+# Results
+We found that model four which used species, chlorophyll, and number of leaves as predictor variables best predicted  pitcher plant total biomass. This model was chosen because it met all assumptions of multiple linear regression and has the lowest AIC value in comparison to all other models, implying that it best predicts the response variable in the simplest way. Overall, the model predicts the biomass of _Sarrencia_ based on the variables of species, chlorophyll, and number of leaves.
+```{r}
+#inserting model summary
+summary(model4_log)
+
+#creating a table for model summary
+table <- tidy(model4_log, conf.int = TRUE) %>% 
+    mutate(p.value = round(p.value, 3)) %>% 
+    #making p values round to three decimals and only state whether they are less than .001
+    mutate(p.value = case_when(
+    p.value < 0.001 ~ "< 0.001", TRUE ~ as.character(p.value)  
+  )) %>% 
+  # using mutate to round each column
+    mutate(across(c("estimate", "std.error", "statistic", "conf.low", "conf.high"), round, 3)) %>% 
+  flextable() %>% 
+    #creating descriptive column names
+    set_header_labels(term = "Term", 
+                      estimate = "Estimate",
+                      std.error = "Standard Error",
+                      statistic = "Statistic",
+                      p.value = "P-value",
+                      conf.low = "Low Confidence Interval",
+                      conf.high = "High Confidence Interval") %>% 
+  #fitting table
+  autofit()
+table
+```
+As seen in the summary, the model has a coefficient of determination, R^2, of 0.84, indicating that 84% of pitcher plant biomass variance can be explained by the predictors and reports a significant F-statistic of 49.22, with a p-value less than 0.001 based on 0.05 significance level.  Based on the table above, model 4 predicts that all else held constant, pitcher plant species flava have a total biomass value that is 1.3 (+ or - 0.2) grams higher than that of pitcher plant species alabamensis, with a 95% confidence interval. Furthermore, model 4 predicts that all else held constant, there is an expected change of 0.08 (+ or- .02) in total number of leaves per a one unit increase in pitcher plant biomass. It should be noted that all above statistics have been logarithmically transformed. However, after back transforming the model and focusing on the predictor of number of total leaves, the following visualization was formed.
+```{r}
+#naming my prediction object
+num_lvs_predict <- ggpredict(model4_log, terms = "num_lvs", back.transform = TRUE)
+
+#creating a visualization
+ggplot(data = plant_subset, aes(x = num_lvs, y = totmass)) +
+  # creating scatter plot with raw data points
+  geom_jitter(color = "orange") +
+  # add a line showing predicted biomass based on number of leaves in pitcher plant
+  geom_line(data = num_lvs_predict, aes(x = x, y = predicted), color = "blue") +
+  # insert confidence interval for the number of leaves prediction
+  geom_ribbon (data = num_lvs_predict, aes(x = x, y = predicted, ymin = conf.low, ymax = conf.high), alpha = 0.2) +
+  # changing axis title for ease of reading
+  labs (x = "Number of Total Leaves of Plant", y = "Total Biomass (g)", title = "Predicted Biomass of Pitcher Plant By Number of Total Leaves of Plant") +
+  theme_classic() 
+```
+**Figure 9: Prediction of Biomass By Number of Total Leaves Using Model 4** Orange points represent recorded data of plant biomass versus their total number of leaves. The blue line represents the predicted response of biomass based on number of leaves, while the gray area represents the confidence interval.
+
+The above visualization represents the prediction of pitcher plant biomass based on number of leaves according to model four, while comparing raw data points. The raw data points display the discrepancy between the number of leaves and the predicted biomass, however the positive coefficient of prediction can be seen which is reflected in model 4.
 
 
 
