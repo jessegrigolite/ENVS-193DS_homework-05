@@ -148,6 +148,7 @@ model2_log <- lm(log(totmass) ~ species, data = plant_subset)
 As inherit biology and genetics is determinant for total size of many other animals, species seemed to be an appropriate predictor that could explain total biomass simply. The second model was then checked visually for the assumptions of multiple linear regression.
 ```{r}
 #visually checking assumptions
+par(mfrow = c(2,2))
 plot(model2_log)
 ```
 **Figure 6: Second Model Diagnostics** The visualization describes the distribution of residuals and normality of data in the second model which includes species as the predictor for pitcher plant total biomass. 
@@ -168,6 +169,7 @@ model3_log <- lm(log(totmass) ~ species + feedlevel, data = plant_subset)
 The third model included species and feed level as the predictors for biomass. Although genetics determines a large amount of individual physiology, nutrient availability in the form of feed, can also influence growth. Furthermore, pitcher plants are native to nutrient deficient ecosystems making them reliant on carnivore for essential nutrients, therefore an increase in nutrient availability may allow them the opportunity to increase their biomass. The third model was then checked visually for meeting the assumnptions of multiple linear regression.
 ```{r}
 #running visual diagnostics on the third model
+par(mfrow = c(2,2))
 plot(model3_log)
 ```
 **Figure 7: Third Model Diagnostics** The visualization describes the distribution of residuals and normality of data in the third model which includes species and feed level to predict total biomass of pitcher plants.
@@ -187,6 +189,7 @@ model4_log <- lm(log(totmass) ~ chlorophyll + num_lvs + species, data = plant_su
 Since pitcher plants harness energy from both carnivory and photosynthesis, it was important to include a model that accounted for the latter. Developing biomass, i.e. growing, requires extensive energy, therefore a plant's photosynthetic capabilities, measured in chlorophyll and leaves, could influence and therefore predict its biomass. The model was then checked visually for meeting the requirements of multiple linear regression.
 ```{r}
 #running visual diagnostics on model 4
+par(mfrow = c(2,2))
 plot(model4_log)
 ```
 **Figure 8: Fourth Model Diagnostics** The visualization describes the distribution of residuals and normality of data in the fourth model which includes species, chlorophyll, and total number of leaves to predict total biomass of pitcher plants.
