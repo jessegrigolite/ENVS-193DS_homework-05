@@ -6,5 +6,4 @@ This data was organized by the Environmental Data Initiative and recorded in 200
 
 
 
-The link to the rendered html document is here.
-[here]("https://jessegrigolite.github.io/ENVS-193DS_homework-05/code/scratch-paper.html")
+

@@ -12,6 +12,8 @@ execute:
   message: false
   warning: false
 ---
+Github Repository link: https://github.com/jessegrigolite/ENVS-193DS_homework-05
+
 
 # Introduction:
 
@@ -261,6 +263,8 @@ The above visualization represents the prediction of pitcher plant biomass based
 
 
 # Works Cited
+
+Ellison, A. and E. Farnsworth. 2021. Effects of Prey Availability on Sarracenia Physiology at Harvard Forest 2005 ver 18. Environmental Data Initiative. https://doi.org/10.6073/pasta/26b22d09279e62fd729ffc35f9ef0174 (Accessed 2023-06-07).
 
 Ellison, Aaron M., and Nicholas J. Gotelli. "Nitrogen Availability Alters the Expression of Carnivory in the Northern Pitcher Plant, Sarracenia Purpurea            Purpurea." Proceedings of the National Academy of Sciences, vol. 99, no. 7, 19 Mar. 2002, pp. 4409--4412, https://doi.org/10.1073/pnas.022057199.
 
